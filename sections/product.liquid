@@ -4,42 +4,238 @@
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/product
 {% endcomment %}
+{{ 'product.css' | asset_url | stylesheet_tag }}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
+<div class="product-container">
+  <div class="product-images">
+    {% if product.images.size > 1 %}
+      <div class="product-slideshow" data-image-count="{{ product.images.size }}">
+        <div class="slideshow-container">
+          <div class="slides-wrapper">
+            {% for image in product.images %}
+              <div class="slide {% if forloop.first %}active{% endif %}" data-slide-index="{{ forloop.index0 }}">
+                {% render 'image', class: 'product-image', image: image %}
+              </div>
+            {% endfor %}
+          </div>
+          
+          <!-- Navigation arrows -->
+          <button class="slideshow-nav prev" aria-label="Previous image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+          </button>
+          <button class="slideshow-nav next" aria-label="Next image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Dot indicators -->
+        <div class="slideshow-dots">
+          {% for image in product.images %}
+            <button class="dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+          {% endfor %}
+        </div>
+
+        <div class="product-images-thumbnails">
+          {% for image in product.images %}
+            <div class="product-image-thumbnail">
+              <img src="{{ image | image_url: width: 100 }}" alt="{{ image.alt }}" width="100" height="100">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="product-info--wrapper">
+    <div class="product-info">
+      <h1>{{ product.title }}</h1>
+      <div class="product-price-wrapper">
+        <h3 class="product-price">{{ product.selected_or_first_available_variant.price | money }}</h3>
+        {% if product.selected_or_first_available_variant.compare_at_price %}
+          <h4 class="product-compare-price">{{ product.selected_or_first_available_variant.compare_at_price | money }}</h4>
+        {% endif %}
+      </div>
+      <div class="product-description">
+        {{ product.description }}
+      </div>
+    </div>
+
+    <div class="product-form">
+      {% form 'product', product %}
+        {% assign current_variant = product.selected_or_first_available_variant %}
+        <input id="product-id" type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {% if product.has_only_default_variant == false %}
+          <div class="product-option">
+            {% for option in product.options_with_values %}
+              <fieldset>
+                <legend>{{ option.name }}</legend>
+                {% for value in option.values %}
+                  <div>
+                    <input type="radio" name="{{ option.name }}" value="{{ value }}" id="{{ option.name }}-{{ value }}"{% if forloop.first %} checked{% endif %}>
+                    <label for="{{ option.name }}-{{ value }}">{{ value }}</label>
+                  </div>
+                {% endfor %}
+              </fieldset>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <input type="text" name="quantity" min="1" value="1">
+
+        <input type="submit" value="Add to cart">
+        {{ form | payment_button }}
+      {% endform %}
+    </div>
+  </div>
 </div>
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+<script>
+  const product = {{ product | json }};
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('change', (e) => {
+      
+      let selectedOptions = [];
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+      document.querySelectorAll('.product-option input[type="radio"]:checked').forEach(input => {
+        selectedOptions.push(input.value);
+      })
 
-    <input type="text" name="quantity" min="1" value="1">
+      let matchingVariant = product.variants.find(variant => {
+        return variant.options.every((option, index) => {
+          return selectedOptions.includes(option);
+        });
+      });
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+      document.getElementById('product-id').value = matchingVariant.id;
+
+      // Update the URL to the product page with the selected options
+      const url = new URLParse(window.location.href, true);
+      url.query.variant = matchingVariant.id;
+      window.history.replaceState({}, '', url.toString());
+
+      // Update the price display
+      document.querySelector('.product-price').textContent = Shopify.formatMoney(matchingVariant.price);
+    });
+  });
+
+  // Product Image Thumbnails
+  document.querySelectorAll('.product-image-thumbnail').forEach((thumbnail, index) => {
+    thumbnail.addEventListener('click', () => {
+      const slideshowContainer = document.querySelector('.product-slideshow');
+      if (slideshowContainer && window.productSlideshow) {
+        // Use the slideshow's goToSlide method to change to the corresponding slide
+        window.productSlideshow.goToSlide(index);
+      }
+    });
+  });
+
+  // Product Image Slideshow with GSAP
+  class ProductSlideshow {
+    constructor(container) {
+      this.container = container;
+      this.slides = container.querySelectorAll('.slide');
+      this.dots = container.querySelectorAll('.dot');
+      this.prevBtn = container.querySelector('.prev');
+      this.nextBtn = container.querySelector('.next');
+      this.currentSlide = 0;
+      this.totalSlides = this.slides.length;
+      this.isAnimating = false;
+
+      this.init();
+    }
+
+    init() {
+      // Set initial positions
+      gsap.set(this.slides, { opacity: 0, scale: 0.95, zIndex: 1 });
+      gsap.set(this.slides[0], { opacity: 1, scale: 1, zIndex: 2 });
+
+      // Set initial active state for first thumbnail
+      const thumbnails = document.querySelectorAll('.product-image-thumbnail');
+      if (thumbnails.length > 0) {
+        thumbnails[0].classList.add('active');
+      }
+
+      // Add event listeners
+      this.prevBtn.addEventListener('click', () => this.goToSlide(this.currentSlide - 1));
+      this.nextBtn.addEventListener('click', () => this.goToSlide(this.currentSlide + 1));
+      
+      this.dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => this.goToSlide(index));
+      });
+    }
+
+    goToSlide(index) {
+      if (this.isAnimating) return;
+
+      // Handle looping
+      if (index >= this.totalSlides) index = 0;
+      if (index < 0) index = this.totalSlides - 1;
+
+      if (index === this.currentSlide) return;
+
+      this.isAnimating = true;
+
+      const currentSlideEl = this.slides[this.currentSlide];
+      const nextSlideEl = this.slides[index];
+
+      // Create timeline for smooth transition
+      const tl = gsap.timeline({
+        onComplete: () => {
+          this.isAnimating = false;
+        }
+      });
+
+      // Animate out current slide
+      tl.to(currentSlideEl, {
+        opacity: 0,
+        scale: 0.95,
+        zIndex: 1,
+        duration: 0.4,
+        ease: "power2.inOut"
+      });
+
+      // Animate in next slide
+      tl.to(nextSlideEl, {
+        opacity: 1,
+        scale: 1,
+        zIndex: 2,
+        duration: 0.4,
+        ease: "power2.inOut"
+      }, "-=0.2");
+
+      // Update active states
+      this.slides[this.currentSlide].classList.remove('active');
+      this.dots[this.currentSlide].classList.remove('active');
+      
+      this.slides[index].classList.add('active');
+      this.dots[index].classList.add('active');
+
+      // Update thumbnail active states
+      const thumbnails = document.querySelectorAll('.product-image-thumbnail');
+      if (thumbnails.length > 0) {
+        thumbnails[this.currentSlide]?.classList.remove('active');
+        thumbnails[index]?.classList.add('active');
+      }
+
+      this.currentSlide = index;
+    }
+
+
+  }
+
+  // Initialize slideshow when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const slideshowContainer = document.querySelector('.product-slideshow');
+    if (slideshowContainer) {
+      window.productSlideshow = new ProductSlideshow(slideshowContainer);
+    }
+  });
+</script>
 
 {% schema %}
 {

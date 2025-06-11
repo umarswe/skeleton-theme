@@ -1,22 +1,51 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_fi9iy3": {
+          "type": "announcement",
+          "settings": {
+            "text": "This website is under testing",
+            "link": ""
+          }
+        },
+        "announcement_fi9iy2": {
+          "type": "announcement",
+          "settings": {
+            "text": "This website is under testing",
+            "link": ""
+          }
+        },
+        "announcement_fi9iy1": {
+          "type": "announcement",
+          "settings": {
+            "text": "This website is under testing",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_fi9iy3",
+        "announcement_fi9iy2",
+        "announcement_fi9iy1"
+      ],
+      "settings": {
+        "title": "Announcement Bar",
+        "items_per_row": 4
+      }
+    },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu"
+      }
     }
   },
   "order": [
+    "announcement-bar",
     "header"
-  ],
+  ]
 }

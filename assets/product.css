@@ -1,0 +1,461 @@
+.product-images{
+  width: 50%;
+}
+
+.product-info--wrapper{
+  max-width: 45%;
+}
+
+.product-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-form form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-description{
+  margin: 10px 0;
+}
+
+.product-price{
+  margin-top: 10px;
+}
+
+/* Product Slideshow Styles */
+.product-slideshow {
+  position: relative;
+  width: 100%;
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f8f8f8;
+}
+
+.slides-wrapper {
+  position: relative;
+  width: 100%;
+  height: 700px;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.4s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide .product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Navigation Arrows */
+.slideshow-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.slideshow-nav:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slideshow-nav.prev {
+  left: 15px;
+}
+
+.slideshow-nav.next {
+  right: 15px;
+}
+
+.slideshow-nav svg {
+  width: 20px;
+  height: 20px;
+  color: #333;
+}
+
+.product-images-thumbnails{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.product-image-thumbnail{
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.product-image-thumbnail:hover{
+  transform: scale(1.1);
+}
+
+/* Dot Indicators */
+.slideshow-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 0 20px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  background: #bbb;
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background: #333;
+  transform: scale(1.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-container {
+    flex-direction: column;
+  }
+  
+  .product-images {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .product-info--wrapper {
+    max-width: 100%;
+  }
+  
+  .slideshow-nav {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .slideshow-nav.prev {
+    left: 10px;
+  }
+  
+  .slideshow-nav.next {
+    right: 10px;
+  }
+  
+  .slideshow-nav svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Product Form Styles */
+.product-form {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.product-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Product Options Container */
+.product-option {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Fieldset Styling */
+.product-form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.product-form fieldset:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Legend Styling */
+.product-form legend {
+  font-weight: 600;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 15px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  display: inline-block;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+/* Radio Button Container */
+.product-form fieldset > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.product-form fieldset > div:last-child {
+  margin-bottom: 0;
+}
+
+/* Custom Radio Button */
+.product-form input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e0;
+  border-radius: 50%;
+  margin-right: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.product-form input[type="radio"]:hover {
+  border-color: #667eea;
+  transform: scale(1.05);
+}
+
+.product-form input[type="radio"]:checked {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.product-form input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* Radio Labels */
+.product-form label {
+  font-size: 14px;
+  color: #4a5568;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+.product-form input[type="radio"]:checked + label {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.product-form label:hover {
+  color: #667eea;
+}
+
+/* Quantity Input */
+.product-form input[name="quantity"] {
+  width: 100px;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.product-form input[name="quantity"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+.product-form input[name="quantity"]:hover {
+  border-color: #cbd5e0;
+}
+
+/* Submit Button */
+.product-form input[type="submit"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-form input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.product-form input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.product-form input[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.product-form input[type="submit"]:hover::before {
+  left: 100%;
+}
+
+/* Payment Button Styling */
+.product-form .shopify-payment-button {
+  margin-top: 10px;
+}
+
+.product-form .shopify-payment-button .shopify-payment-button__button {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.product-form .shopify-payment-button .shopify-payment-button__button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Responsive Design for Product Form */
+@media (max-width: 768px) {
+  .product-form {
+    padding: 20px;
+    margin-top: 15px;
+  }
+  
+  .product-form fieldset {
+    padding: 15px;
+  }
+  
+  .product-form legend {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .product-form input[type="submit"] {
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+  
+  .product-form input[name="quantity"] {
+    width: 80px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Animation for form load */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-form {
+  animation: slideInUp 0.6s ease-out;
+}

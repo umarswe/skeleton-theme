@@ -1,0 +1,115 @@
+{{ 'announcement-bar.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .announcement-bar__items {
+    display: grid;
+    flex-wrap: nowrap;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    align-items: center;
+    text-align: center;
+  }
+
+  .announcement-bar__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--color-foreground);
+  }
+{% endstyle %}
+
+<div class="announcement-bar">
+  <div class="announcement-bar__content marquee" data-marquee-duration="10">
+    <div class="announcement-bar__items marquee__inner">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.link }}" class="announcement-bar__item marquee__content">
+          {{ block.settings.text }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const init = () => {
+      const marquee = document.querySelectorAll('.marquee')
+      
+      if(!marquee) return
+    
+      marquee.forEach(item => {
+        const marqueeInner = item.querySelector('.marquee__inner')
+        const marqueeContent = marqueeInner.querySelector('.marquee__content')
+        
+        // Duration
+        const duration = item.getAttribute('data-marquee-duration')
+        
+        // Element Clone
+        const marqueeContentClone = marqueeContent.cloneNode(true)
+        marqueeInner.append(marqueeContentClone)
+        
+        // Marquee animation
+        const marqueeContentAll = marqueeInner.querySelectorAll('.marquee__content')
+        marqueeContentAll.forEach(element => {
+          gsap.to(element, {
+              x: "-100%",
+              repeat: -1,
+              duration: duration,
+              ease: 'linear'
+          })
+        })
+      })
+    }
+    
+    init()
+  })
+</script>
+
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "range",
+      "id": "items_per_row",
+      "label": "Items per row",
+      "min": 1,
+      "max": 4,  
+      "step": 1,
+      "default": 1,
+      "info": "The number of items to display per row"
+    },
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

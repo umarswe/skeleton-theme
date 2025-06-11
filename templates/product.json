@@ -12,9 +12,14 @@
     "main": {
       "type": "product",
       "settings": {}
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "recently-viewed"
   ]
 }

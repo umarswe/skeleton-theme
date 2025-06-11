@@ -1,0 +1,90 @@
+{{ 'recently-viewed.css' | asset_url | stylesheet_tag }}
+
+<div class="recently-viewed" id="recently-viewed-section">
+  <div class="recently-viewed-container">
+    <h2 class="recently-viewed-title">{{ section.settings.section_title | default: 'Recently Viewed' }}</h2>
+
+    <div class="recently-viewed-products" id="recently-viewed-products"></div>
+
+    <div class="recently-viewed-empty" id="recently-viewed-empty" style="display: none;">
+      <p>{{ section.settings.empty_message | default: 'No recently viewed products yet.' }}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const product = {
+      id: {{ product.id }},
+      title: {{ product.title | json }},
+      price: {{ product.price }},
+      image: {{ product.featured_image | image_url: width: 700 | json }},
+      url: {{ product.url | json }}
+    };
+
+    let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+    recentlyViewed = recentlyViewed.filter(function(item) {
+      return item.id !== product.id;
+    });
+
+    recentlyViewed.unshift(product);
+    if (recentlyViewed.length > 5) {
+      recentlyViewed.pop();
+    }
+
+    localStorage.setItem('recentlyViewed', JSON.stringify(recentlyViewed));
+
+    const recentlyViewedProducts = document.getElementById('recently-viewed-products');
+    
+    if (recentlyViewedProducts) {
+      recentlyViewedProducts.innerHTML = recentlyViewed.map(function(item) {
+        return `
+          <div class="product-card">
+            <a href="${item.url}">
+              <div class="product-card__image-container">
+                <img class="product-card__image" src="${item.image}" alt="${item.title}">
+              </div>
+              <div class="product-card__title">${item.title}</div>
+            </a>
+            <div class="product-card__price">${item.price}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Recently Viewed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Recently Viewed"
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Empty State Message",
+      "default": "No recently viewed products yet."
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum Products to Show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently Viewed",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

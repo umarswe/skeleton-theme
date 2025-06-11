@@ -18,6 +18,13 @@
 
     {{ content_for_layout }}
 
+
+    {% section 'cart-drawer' %}
+
     {% sections 'footer-group' %}
+
+    <script src="{{ 'script.js' | asset_url }}" defer></script>
+    <script src="{{ 'gsap.min.js' | asset_url }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/url-parse@1.5.10/dist/url-parse.min.js" defer></script>
   </body>
 </html>
