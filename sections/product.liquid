@@ -47,6 +47,18 @@
           {% endfor %}
         </div>
       </div>
+    {% elsif product.images.size == 1 %}
+      <!-- Single image display -->
+      <div class="product-single-image">
+        {% render 'image', class: 'product-image', image: product.images.first %}
+      </div>
+    {% else %}
+      <!-- No images available -->
+      <div class="product-no-image">
+        <div class="placeholder-image">
+          <span>No image available</span>
+        </div>
+      </div>
     {% endif %}
   </div>
 

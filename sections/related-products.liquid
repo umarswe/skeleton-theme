@@ -1,0 +1,44 @@
+{% comment %}
+  This section is used to display related products to the current product.
+  It is used on the product page.
+{% endcomment %}
+
+{{ 'related-products.css' | asset_url | stylesheet_tag }}
+
+<div class="related-products">
+  <h2>Related Products</h2>
+  <div class="related-products__list"></div>
+</div>
+
+{% assign product_id = product.id %}
+
+<script>
+  function buildRelatedProducts(product) {
+    const html = `
+      <a class="related-product" href="${product.url}">
+        <img src="${product.images[0]}" alt="${product.title}">
+        <h3>${product.title}</h3>
+        <p>${product.price}</p>
+      </a>
+    `;
+
+    return html;
+
+  }
+
+  fetch(window.Shopify.routes.root + 'recommendations/products.json?product_id={{ product_id }}&limit=4&intent=related')
+    .then((response) => response.json())
+    .then(({ products }) => {
+      products.forEach((product) => {
+        const html = buildRelatedProducts(product);
+        document.querySelector('.related-products__list').innerHTML += html;
+      });
+    });
+</script>
+
+{% schema %}
+{
+  "name": "Related Products",
+  "settings": []
+}
+{% endschema %}

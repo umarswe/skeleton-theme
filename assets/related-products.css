@@ -1,0 +1,17 @@
+.related-products{
+  margin-top: 40px;
+  text-align: center;
+}
+
+.related-products__list{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.related-product{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

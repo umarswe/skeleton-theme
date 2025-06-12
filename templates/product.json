@@ -16,10 +16,15 @@
     "recently-viewed": {
       "type": "recently-viewed",
       "settings": {}
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "recently-viewed"
+    "recently-viewed",
+    "related-products"
   ]
 }
